@@ -1,5 +1,8 @@
 package com.example.group1project;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -8,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
@@ -108,10 +112,12 @@ private int result=0;
 					String data = bundle.getString("data");
 					Log.i("data in main class", data);
 					//if ("stomp".equalsIgnoreCase(data)||"stomp2".equalsIgnoreCase(data)||"stomp3".equalsIgnoreCase(data)) {
-					if ("game".equalsIgnoreCase(data)){
+					if ("emergency".equalsIgnoreCase(data)){
 						Intent in=new Intent(context, MainActivity_2048.class);
 						startActivity(in);
+						SaveData("2048 game starts");
 						speakOut("You Chose The 2  0  4  8 game");
+						
 					Toast.makeText(getApplicationContext(), "You chose 2048 game", Toast.LENGTH_SHORT).show();
 					
 					}
@@ -119,10 +125,20 @@ private int result=0;
 						speakOut("You Chose The Got2run game");
 						Intent in=new Intent(context, MainActivity_got2run.class);
 						startActivity(in);
+						SaveData("The Got2run game starts");
 					Toast.makeText(getApplicationContext(), "The Got2run game chosen", Toast.LENGTH_SHORT).show();
 					
 					}
-					
+					else if ("exit".equalsIgnoreCase(data)){
+						SaveData("Games Service End Called"+"\t");
+						speakOut("Exit Game Service");
+						
+						//speakOut("Quit Game");
+						onBackPressed();
+						//Toast.makeText(getApplicationContext(), "Quit Game", Toast.LENGTH_SHORT).show();
+						
+						Toast.makeText(getApplicationContext(), "Exit Game Service", Toast.LENGTH_SHORT).show();
+					}
 					}else{
 					Log.i("data in main class", "bundle null");
 					//Toast.makeText(getApplicationContext(), "not", Toast.LENGTH_SHORT).show();
@@ -172,4 +188,65 @@ public void onDestroy() {
 	    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
 	    }
 	   }
+	private void SaveData(String string) {
+	      // Log.i("string", string);
+	 
+	 File sdCard = Environment.getExternalStorageDirectory(); 
+		File myDir = new File (sdCard.getAbsolutePath() + "/Data"); 
+		Log.i("File writing","entered  "+string);
+	      if(!myDir.exists())
+	        myDir.mkdirs();
+	        String fname = "Group1project.txt";
+	        File file = new File (myDir, fname);
+	        
+
+
+			String address = "";
+			GPSService mGPSService = new GPSService(getApplicationContext());
+			mGPSService.getLocation();
+
+			if (mGPSService.isLocationAvailable == false) {
+
+				// Here you can ask the user to try again, using return; for that
+			//	Toast.makeText(getActivity(), "Your location is not available, please try again.", Toast.LENGTH_SHORT).show();
+				return;
+
+				// Or you can continue without getting the location, remove the return; above and uncomment the line given below
+				// address = "Location not available";
+			} else {
+
+				// Getting location co-ordinates
+				double latitude = mGPSService.getLatitude();
+				double longitude = mGPSService.getLongitude();
+		//		Toast.makeText(getApplicationContext(), "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
+
+				address = mGPSService.getLocationAddress();
+
+			
+			}
+
+		//	Toast.makeText(getApplicationContext(), "Your address is: " + address, Toast.LENGTH_SHORT).show();
+			
+			// make sure you close the gps after using it. Save user's battery power
+			mGPSService.closeGPS();
+
+			
+		
+			 Date d = new Date();
+	        
+	        String line="\n"+string+"\t"+d.toGMTString()+"\t"+address+"\t";
+	        try {
+	            if(!file.exists())
+	                file.createNewFile();
+	               FileOutputStream out = new FileOutputStream(file,true);
+	               out.write(line.getBytes());
+	               out.flush();
+	               out.close();
+
+	        } catch (Exception e) {
+	               e.printStackTrace();
+	        }
+	    }
+
 }
+

@@ -1255,17 +1255,23 @@ containing a value of this type.
         public static final int activity_highscore_got2run=0x7f03001a;
         public static final int activity_main=0x7f03001b;
         public static final int activity_main_got2run=0x7f03001c;
-        public static final int activity_setting_got2run=0x7f03001d;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001e;
-        public static final int xy_chart=0x7f03001f;
+        public static final int activity_report_view=0x7f03001d;
+        public static final int activity_setting_got2run=0x7f03001e;
+        public static final int spinner_item=0x7f03001f;
+        public static final int support_simple_spinner_dropdown_item=0x7f030020;
+        public static final int xy_chart=0x7f030021;
     }
     public static final class menu {
         public static final int about=0x7f0d0000;
-        public static final int game=0x7f0d0001;
-        public static final int game_view=0x7f0d0002;
-        public static final int highscore=0x7f0d0003;
-        public static final int main=0x7f0d0004;
-        public static final int setting=0x7f0d0005;
+        public static final int bar_graph=0x7f0d0001;
+        public static final int game=0x7f0d0002;
+        public static final int game_view=0x7f0d0003;
+        public static final int highscore=0x7f0d0004;
+        public static final int main=0x7f0d0005;
+        public static final int piechart=0x7f0d0006;
+        public static final int report=0x7f0d0007;
+        public static final int report_view=0x7f0d0008;
+        public static final int setting=0x7f0d0009;
     }
     public static final class raw {
         public static final int cointake=0x7f050000;
@@ -1337,11 +1343,16 @@ containing a value of this type.
         public static final int play=0x7f0b0017;
         public static final int score=0x7f0b001f;
         public static final int set=0x7f0b0018;
+        public static final int str_tv_title=0x7f0b002d;
         public static final int test=0x7f0b001c;
         public static final int title_activity_about=0x7f0b0015;
+        public static final int title_activity_bar_graph=0x7f0b002a;
         public static final int title_activity_game=0x7f0b0016;
         public static final int title_activity_game_view=0x7f0b0020;
         public static final int title_activity_highscore=0x7f0b001d;
+        public static final int title_activity_piechart=0x7f0b002b;
+        public static final int title_activity_report=0x7f0b002c;
+        public static final int title_activity_report_view=0x7f0b002e;
         public static final int title_activity_setting=0x7f0b001a;
         public static final int vol=0x7f0b001b;
         public static final int x=0x7f0b0011;

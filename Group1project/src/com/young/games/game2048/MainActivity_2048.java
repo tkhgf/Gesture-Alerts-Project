@@ -1,4 +1,7 @@
 package com.young.games.game2048;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.Locale;
 
 import com.example.group1project.*;
@@ -11,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -172,28 +176,35 @@ public class MainActivity_2048 extends Activity  implements TextToSpeech.OnInitL
 					//Moving Up
 					view.game.move(0);
 					speakOut("Moved Up");
-				Toast.makeText(getApplicationContext(), "Hunger Gesture", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Moved Up", Toast.LENGTH_SHORT).show();
 				}
 				else if ("game".equalsIgnoreCase(data)){
 					//Move Down
 					view.game.move(2);
 					speakOut("Moved Down");
-					Toast.makeText(getApplicationContext(), "Game/Stomp Gesture", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), "Moved Down", Toast.LENGTH_SHORT).show();
 					}
 				else if("thirsty".equalsIgnoreCase(data)){
 					//Move Left
 					view.game.move(3);
 					speakOut("Moved Left");
-					Toast.makeText(getApplicationContext(), "Thirsty Gesture", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), "Moved Left", Toast.LENGTH_SHORT).show();
 					}
 			
-				else if("circle".equalsIgnoreCase(data)){
+				else if("emergency".equalsIgnoreCase(data)){
 					
 				//	setting(view3);
 					speakOut("Moved Right");
-					Toast.makeText(getApplicationContext(), "Circle Gesture", Toast.LENGTH_SHORT).show();
+					view.game.move(1);
+					Toast.makeText(getApplicationContext(), "Moved Right", Toast.LENGTH_SHORT).show();
 					}
-			
+				else if("exit".equalsIgnoreCase(data)){
+					SaveData("The 2048 Game Ends ");
+					speakOut("Quit 2048 Game");
+					onBackPressed();
+					Toast.makeText(getApplicationContext(), "Quit 2048 Game", Toast.LENGTH_SHORT).show();
+					
+				}
 				//Toast.makeText(getApplicationContext(), "Ok", Toast.LENGTH_SHORT).show();
 			}else{
 				Log.i("data in main class", "bundle null");
@@ -202,6 +213,73 @@ public class MainActivity_2048 extends Activity  implements TextToSpeech.OnInitL
 			//handleResult(bundle);
 		}
 };
+
+@Override
+public void onBackPressed() {
+    super.onBackPressed();   
+    //    finish();
+
+}
+
+private void SaveData(String string) {
+      // Log.i("string", string);
+ 
+ File sdCard = Environment.getExternalStorageDirectory(); 
+	File myDir = new File (sdCard.getAbsolutePath() + "/Data"); 
+	Log.i("File writing","entered  "+string);
+      if(!myDir.exists())
+        myDir.mkdirs();
+        String fname = "Group1project.txt";
+        File file = new File (myDir, fname);
+        
+
+
+		String address = "";
+		GPSService mGPSService = new GPSService(getApplicationContext());
+		mGPSService.getLocation();
+
+		if (mGPSService.isLocationAvailable == false) {
+
+			// Here you can ask the user to try again, using return; for that
+		//	Toast.makeText(getActivity(), "Your location is not available, please try again.", Toast.LENGTH_SHORT).show();
+			return;
+
+			// Or you can continue without getting the location, remove the return; above and uncomment the line given below
+			// address = "Location not available";
+		} else {
+
+			// Getting location co-ordinates
+			double latitude = mGPSService.getLatitude();
+			double longitude = mGPSService.getLongitude();
+	//		Toast.makeText(getApplicationContext(), "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
+
+			address = mGPSService.getLocationAddress();
+
+		
+		}
+
+	//	Toast.makeText(getApplicationContext(), "Your address is: " + address, Toast.LENGTH_SHORT).show();
+		
+		// make sure you close the gps after using it. Save user's battery power
+		mGPSService.closeGPS();
+
+		
+	
+		 Date d = new Date();
+        
+        String line="\n"+string+"\t"+d.toGMTString()+"\t"+address+"\t";
+        try {
+            if(!file.exists())
+                file.createNewFile();
+               FileOutputStream out = new FileOutputStream(file,true);
+               out.write(line.getBytes());
+               out.flush();
+               out.close();
+
+        } catch (Exception e) {
+               e.printStackTrace();
+        }
+    }
 @Override
 public void onDestroy() {
     if (tts != null) {

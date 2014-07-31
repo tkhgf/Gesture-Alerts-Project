@@ -21,7 +21,6 @@
     <string name="hs">Highscore :</string>
     <string name="score">HighScore</string>
     <string name="title_activity_game_view">Game_view</string>
-      
     <string name="header">2048</string>
     <string name="new_game">New Game</string>
     <string name="high_score">HIGH SCORE</string>
@@ -31,6 +30,10 @@
     <string name="go_on">Tap to Continue</string>
     <string name="for_now">For now&#8230;</string>
     <string name="endless">"Endless" Mode</string>
-    
+    <string name="title_activity_bar_graph">BarGraph</string>
+    <string name="title_activity_piechart">Piechart</string>
+    <string name="title_activity_report">Report</string>
+    <string name="str_tv_title">Pie Chart of Gestures</string>
+    <string name="title_activity_report_view">Report_view</string>
 
 </resources>

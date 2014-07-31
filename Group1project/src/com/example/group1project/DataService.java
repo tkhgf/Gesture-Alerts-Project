@@ -1,5 +1,6 @@
 package com.example.group1project;
 import com.example.group1project.SensorTagData.SimpleKeysStatus;
+import com.example.group1project.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -623,17 +624,53 @@ public class DataService extends IntentService implements BluetoothAdapter.LeSca
 	 
 	 File sdCard = Environment.getExternalStorageDirectory(); 
 		File myDir = new File (sdCard.getAbsolutePath() + "/Data"); 
-Log.i("File writing","entered  "+string);
+		Log.i("File writing","entered  "+string);
 	      if(!myDir.exists())
 	        myDir.mkdirs();
 	        String fname = "Group1project.txt";
 	        File file = new File (myDir, fname);
 	        
+
+
+			String address = "";
+			GPSService mGPSService = new GPSService(getApplicationContext());
+			mGPSService.getLocation();
+
+			if (mGPSService.isLocationAvailable == false) {
+
+				// Here you can ask the user to try again, using return; for that
+			//	Toast.makeText(getActivity(), "Your location is not available, please try again.", Toast.LENGTH_SHORT).show();
+				return;
+
+				// Or you can continue without getting the location, remove the return; above and uncomment the line given below
+				// address = "Location not available";
+			} else {
+
+				// Getting location co-ordinates
+				double latitude = mGPSService.getLatitude();
+				double longitude = mGPSService.getLongitude();
+		//		Toast.makeText(getApplicationContext(), "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
+
+				address = mGPSService.getLocationAddress();
+
+			
+			}
+
+		//	Toast.makeText(getApplicationContext(), "Your address is: " + address, Toast.LENGTH_SHORT).show();
+			
+			// make sure you close the gps after using it. Save user's battery power
+			mGPSService.closeGPS();
+
+			
+		
+			 Date d = new Date();
+	        
+	        String line="\n"+string+"\t"+d.toGMTString()+"\t"+address+"\t";
 	        try {
 	            if(!file.exists())
 	                file.createNewFile();
 	               FileOutputStream out = new FileOutputStream(file,true);
-	               out.write(string.getBytes());
+	               out.write(line.getBytes());
 	               out.flush();
 	               out.close();
 
@@ -650,29 +687,7 @@ Boolean gesture = false;
     	if(!directory.exists()) 
     		directory.mkdirs(); 
     	 
-    //	File file = new File (directory, fname); 
- 	//	File outputDir = getApplicationContext().getCacheDir(); // context being the Activity pointer
-    	/*	File outputFile = File.createTempFile("learn", ".seq", directory);
- 		if(outputFile.exists()){
- 			outputFile.delete();
- 			outputFile=File.createTempFile("learn", ".seq", directory);
- 		}
- 		//BufferedReader reader = new BufferedReader(new FileReader("test.seq"));
- 	    //code to work with list of values
- 		List<String> dataPoints= datapointsList;
- 		for (int i = 0; i < dataPoints.size(); i++) {
- 	            buffer.append(datapointsList.get(i));
- 		}
- 		buffer.append(System.getProperty("line.separator"));
- 	    
- 		FileWriter writer = new FileWriter(outputFile);
- 	    writer.write(buffer.toString());
- 	    buffer.delete(0, buffer.length());
- 	    writer.close(); 
- 	    buffer.append(System.getProperty("line.separator"));
-    	SaveData(buffer.toString());
-        buffer.delete(0, buffer.length());
- 	    */
+   
     	List<String> dataPoints= datapointsList;
  		for (int i = 0; i < dataPoints.size(); i++) {
  	            buffer.append(datapointsList.get(i));

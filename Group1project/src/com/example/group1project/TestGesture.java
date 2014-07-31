@@ -33,6 +33,8 @@ public class TestGesture {
 	Hmm<ObservationVector> learntHmmPunch=null;
 	Hmm<ObservationVector> learntHmmScrolldown=null;
 	Hmm<ObservationVector> learntHmmSend=null;
+	Hmm<ObservationVector> learntHmmEmer=null;
+	Hmm<ObservationVector> learntHmmBack=null;
 	File sdCard = Environment.getExternalStorageDirectory(); 
 	File myDir = new File (sdCard.getAbsolutePath() + "/Data"); 
 
@@ -144,7 +146,75 @@ public void	train() {
 		  
 	  }
 	}
-	}
+	 // Create HMM for send gesture
+		Boolean exception3 =false;
+		int x3=10;
+		while(!exception3){
+		try{
+	   OpdfMultiGaussianFactory initFactoryEmer = new OpdfMultiGaussianFactory(
+	           3);
+
+	   Reader learnReaderEmer = new FileReader(new File (myDir, "emergency1.seq"));
+	   List<List<ObservationVector>> learnSequencesEmer = ObservationSequencesReader
+	           .readSequences(new ObservationVectorReader(), learnReaderEmer);
+	   Log.i("Emergency File Readed : ",learnReaderEmer.toString());
+	   learnReaderEmer.close();
+
+	   KMeansLearner<ObservationVector> kMeansLearnerEmer = new KMeansLearner<ObservationVector>(
+	           x3, initFactoryEmer, learnSequencesEmer);
+	   // Create an estimation of the HMM (initHmm) using one iteration of the
+	   // k-Means algorithm
+	   Hmm<ObservationVector> initHmmEmer = kMeansLearnerEmer.iterate();
+
+	   // Use BaumWelchLearner to create the HMM (learntHmm) from initHmm
+	   BaumWelchLearner baumWelchLearnerEmer = new BaumWelchLearner();
+	    this.learntHmmEmer = baumWelchLearnerEmer.learn(
+	           initHmmEmer, learnSequencesEmer);
+	    exception3=true;
+	    System.out.println(x3);
+		  }
+		  catch(Exception e){
+			  x3--;
+			  //System.out.println(x2);
+			  
+		  }
+		}
+		
+		 // Create HMM for send gesture
+		Boolean exception4 =false;
+		int x4=10;
+		while(!exception4){
+		try{
+	   OpdfMultiGaussianFactory initFactoryBack = new OpdfMultiGaussianFactory(
+	           3);
+
+	   Reader learnReaderBack = new FileReader(new File (myDir, "exit.seq"));
+	   List<List<ObservationVector>> learnSequencesBack = ObservationSequencesReader
+	           .readSequences(new ObservationVectorReader(), learnReaderBack);
+	   Log.i("Back File Readed : ",learnReaderBack.toString());
+	   learnReaderBack.close();
+
+	   KMeansLearner<ObservationVector> kMeansLearnerBack = new KMeansLearner<ObservationVector>(
+	           x4, initFactoryBack, learnSequencesBack);
+	   // Create an estimation of the HMM (initHmm) using one iteration of the
+	   // k-Means algorithm
+	   Hmm<ObservationVector> initHmmBack = kMeansLearnerBack.iterate();
+
+	   // Use BaumWelchLearner to create the HMM (learntHmm) from initHmm
+	   BaumWelchLearner baumWelchLearnerBack = new BaumWelchLearner();
+	    this.learntHmmBack = baumWelchLearnerBack.learn(
+	           initHmmBack, learnSequencesBack);
+	    exception4=true;
+	    System.out.println(x4);
+		  }
+		  catch(Exception e){
+			  x4--;
+			  //System.out.println(x2);
+			  
+		  }
+		}
+
+}
 	
 public String test(File seqfilename) throws Exception{
     Reader testReader = new FileReader(new File (myDir, "learn.seq"));
@@ -153,7 +223,7 @@ public String test(File seqfilename) throws Exception{
     testReader.close();
     Log.i("Text Readed : ",testSequences.toString());
     short gesture; // punch = 1, scrolldown = 2, send = 3
-    double punchProbability, scrolldownProbability, sendProbability;
+    double punchProbability, scrolldownProbability, sendProbability, emerProbability, backProbability;
     Log.i("Test gesture Method : ", "Entered");
     
     for (int i = 0; i < testSequences.size(); i++) {
@@ -178,6 +248,29 @@ public String test(File seqfilename) throws Exception{
                 || (gesture == 2 && sendProbability > scrolldownProbability)) {
             gesture = 3;
         }
+        
+        emerProbability = this.learntHmmEmer.probability(testSequences
+                .get(i));
+        Log.i("seq file size : ", "five+");
+        //System.out.println(punchProbability +","+scrolldownProbability +","+emerProbability);
+        if ((gesture == 1 && emerProbability > punchProbability)
+                || (gesture == 2 && emerProbability > scrolldownProbability) || (gesture == 3 && emerProbability > sendProbability)) {
+            gesture = 4;
+        }
+        
+        
+       backProbability = this.learntHmmBack.probability(testSequences
+                .get(i));
+        Log.i("seq file size : ", "five+");
+        //System.out.println(punchProbability +","+scrolldownProbability +","+emerProbability);
+        if ((gesture == 1 && backProbability > punchProbability)
+                || (gesture == 2 && backProbability > scrolldownProbability) || (gesture == 3 && backProbability > sendProbability)|| (gesture == 4 && backProbability > emerProbability)) {
+            gesture = 5;
+        }
+        
+        
+        
+        
         Log.i("probabilities", punchProbability + "   " + sendProbability  + "   " + scrolldownProbability);
         if (gesture == 1) {
         	System.out.println("This is a Hungry gesture");
@@ -188,6 +281,14 @@ public String test(File seqfilename) throws Exception{
         } else if (gesture == 3) {
         	System.out.println("This is a Thirsty gesture");
         	return "thirsty";
+        }
+        else if (gesture == 4) {
+        	System.out.println("This is a Emergency gesture");
+        	return "emergency";
+        }
+        else if (gesture == 5) {
+        	System.out.println("This is a Exit gesture");
+        	return "exit";
         }else{
         	return "others";
         }

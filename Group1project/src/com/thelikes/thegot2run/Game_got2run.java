@@ -94,7 +94,7 @@ public class Game_got2run extends Activity implements TextToSpeech.OnInitListene
     	  			speakOut("Resume");
 				Toast.makeText(getApplicationContext(), "Resume", Toast.LENGTH_SHORT).show();
 				}
-				else if ("game".equalsIgnoreCase(data)){
+				else if ("emergency".equalsIgnoreCase(data)){
 					show=1;
 					speakOut("Jump");
 					Toast.makeText(getApplicationContext(), "Jump", Toast.LENGTH_SHORT).show();
@@ -107,12 +107,20 @@ public class Game_got2run extends Activity implements TextToSpeech.OnInitListene
     	  			pausecount=1;
 					Toast.makeText(getApplicationContext(), "Pause", Toast.LENGTH_SHORT).show();
 					}
-				else if("circle".equalsIgnoreCase(data)){
+				
+				else if("game".equalsIgnoreCase(data)){
 
 	  				gameLoopThread.setPause(0);
-	  				speakOut("Restart");
+	  				speakOut("Restarted, You Got Full Health Now");
+	  				Toast.makeText(getApplicationContext(), "Restarted, You Got Full Health Now", Toast.LENGTH_SHORT).show();
 					health=100;
 					score=0;
+				}
+				else if("exit".equalsIgnoreCase(data)){
+					speakOut("Quit Game");
+					onBackPressed();
+					Toast.makeText(getApplicationContext(), "Quit Game", Toast.LENGTH_SHORT).show();
+					
 				}
 				/*if(health==0)
 				{
@@ -128,7 +136,12 @@ public class Game_got2run extends Activity implements TextToSpeech.OnInitListene
 
 		
 	};
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();   
+        //    finish();
 
+    }
 	public class GameView extends SurfaceView{
 	      Bitmap bmp,pause;
 	      Bitmap background,kinfe,note1,powerimg,note2;

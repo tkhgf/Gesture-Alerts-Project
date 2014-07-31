@@ -1,5 +1,10 @@
 package com.example.group1project;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import org.achartengine.chartdemo.demo.chart.AverageCubicTemperatureChart;
@@ -25,6 +30,7 @@ import com.example.group1project.DataService;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.gsm.SmsManager;
 import android.util.Log;
 import android.view.Menu;
@@ -80,12 +86,13 @@ private int result=0;
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					String phoneNumber = "8168096151";
+					String phoneNumber = "2012457552";
 					String message = "I am feeling very Hunger";
 					speakOut(message_hungry);
-				//	@SuppressWarnings("deprecation")
-				//	SmsManager smsManager = SmsManager.getDefault();
-				//	smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+					SaveData("Hungry Alert Service Called"+"\t");
+					@SuppressWarnings("deprecation")
+					SmsManager smsManager = SmsManager.getDefault();
+					smsManager.sendTextMessage(phoneNumber, null, message, null, null);
 					
 				}
 				
@@ -96,12 +103,14 @@ private int result=0;
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					String phoneNumber = "9712589945";
-					String message = "I am feeling Thirsty Brother";
+					SaveData("Thirsty Alert Service Called"+"\t");
+					String phoneNumber = "8168105148";
+					String message = "I need some water";
 					speakOut(message_thirsty);
-					//@SuppressWarnings("deprecation")
-					//SmsManager smsManager = SmsManager.getDefault();
-					//smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+					
+					@SuppressWarnings("deprecation")
+					SmsManager smsManager = SmsManager.getDefault();
+					smsManager.sendTextMessage(phoneNumber, null, message, null, null);
 					
 				}
 				
@@ -112,6 +121,7 @@ private int result=0;
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					SaveData("`Games Service Called"+"\t");
 					Intent in=new Intent(v.getContext(), Game_view.class);
 					startActivityForResult(in,0);
 					speakOut("Tiru Made some games for you, Have fun, You have two games available to play now, 2,0,4,8, a number puzzle game and The Got2run an Arcade game");
@@ -128,9 +138,14 @@ private int result=0;
 				@Override
 				public void onClick(View v) {
 					
+					Intent in=new Intent(v.getContext(), Report_view.class);
+					startActivityForResult(in,0);
+					
+					
 					// TODO Auto-generated method stub
-					 intent = mCharts[14].execute(v.getContext());
-					startActivity(intent);
+					// intent = mCharts[14].execute(v.getContext());
+					
+				//	startActivity(intent);
 					speakOut(message_report);
 				}
 				
@@ -177,25 +192,26 @@ private int result=0;
 			if (bundle!=null) {
 				String data = bundle.getString("data");
 				Log.i("data in main class", data);
-				//if ("stomp".equalsIgnoreCase(data)||"stomp2".equalsIgnoreCase(data)||"stomp3".equalsIgnoreCase(data)) {
 				if ("hungry".equalsIgnoreCase(data)){
-					String phoneNumber = "4086806151";
+					SaveData("Hungry Alert Service Called"+"\t");
+					String phoneNumber = "2012457552";
 					String message = "I need some food";
 					speakOut(message_hungry);
-				//	@SuppressWarnings("deprecation")
-				//	SmsManager smsManager = SmsManager.getDefault();
-				//	smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+					@SuppressWarnings("deprecation")
+					SmsManager smsManager = SmsManager.getDefault();
+					smsManager.sendTextMessage(phoneNumber, null, message, null, null);
 				
 				Toast.makeText(getApplicationContext(), "Don't Worry, Chaitanya will bring some food", Toast.LENGTH_SHORT).show();
 				
 				}
 				else if ("thirsty".equalsIgnoreCase(data)){
+					SaveData("Thirsty Alert Service Called"+"\t");
 					String phoneNumber = "8168105148";
 					String message = "I need some water";
 					speakOut(message_thirsty);
-				//	@SuppressWarnings("deprecation")
-				//	SmsManager smsManager = SmsManager.getDefault();
-				//	smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+					@SuppressWarnings("deprecation")
+					SmsManager smsManager = SmsManager.getDefault();
+					smsManager.sendTextMessage(phoneNumber, null, message, null, null);
 				
 				Toast.makeText(getApplicationContext(), "Don't Worry, Shyamala will bring some Water", Toast.LENGTH_SHORT).show();
 				
@@ -203,8 +219,11 @@ private int result=0;
 				else if ("game".equalsIgnoreCase(data)){
 				//	Intent in=new Intent(this, GameActivity.class);
 				//	startActivityForResult(in,0);
+					SaveData("`Games Service Called"+"\t");
 					speakOut("Tiru Made some games for you, Have fun");
 					Intent in=new Intent(context, Game_view.class);
+					//Intent in=new Intent(context, Report.class);
+					
 					startActivity(in);
 					//Intent intent=null;
 				//	intent = mCharts[14].execute(context);
@@ -215,6 +234,30 @@ private int result=0;
 					
 					Toast.makeText(getApplicationContext(), "Tiru Made some games for you, Have fun", Toast.LENGTH_SHORT).show();
 					
+				}
+				else if ("emergency".equalsIgnoreCase(data)){
+					SaveData("Emergency Alert Service Called"+"\t");
+					String phoneNumber = "4086806151";
+					String message = "Emergency Alert";
+					speakOut("Emergency Alert Sent");
+				@SuppressWarnings("deprecation")
+						SmsManager smsManager = SmsManager.getDefault();
+						smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+					
+					Toast.makeText(getApplicationContext(), "Emergency Alert Sent", Toast.LENGTH_SHORT).show();
+					
+				}
+				else if ("exit".equalsIgnoreCase(data)){
+					SaveData("`Report Service Called"+"\t");
+					speakOut("Divya Made a nice report for you");
+					Intent in=new Intent(context, Report_view.class);
+					
+					
+					startActivity(in);
+					//For sensor Tag values
+					//intent = mCharts[14].execute(context);
+				//	startActivity(intent);
+					Toast.makeText(getApplicationContext(), "Report", Toast.LENGTH_SHORT).show();
 				}
 			
 					//	startActivity(intent);
@@ -232,7 +275,12 @@ private int result=0;
 
 		
 	};
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();   
+        //    finish();
 
+    }
 @Override
 public void onDestroy() {
     if (tts != null) {
@@ -272,4 +320,96 @@ public void onDestroy() {
 	    }
 	   }
 
+	private void SaveData(String string) {
+	      // Log.i("string", string);
+	 
+	 File sdCard = Environment.getExternalStorageDirectory(); 
+		File myDir = new File (sdCard.getAbsolutePath() + "/Data"); 
+		Log.i("File writing","entered  "+string);
+	      if(!myDir.exists())
+	        myDir.mkdirs();
+	        String fname = "Group1project.txt";
+	        File file = new File (myDir, fname);
+	        
+
+
+			String address = "";
+			GPSService mGPSService = new GPSService(getApplicationContext());
+			mGPSService.getLocation();
+
+			if (mGPSService.isLocationAvailable == false) {
+
+				// Here you can ask the user to try again, using return; for that
+			//	Toast.makeText(getActivity(), "Your location is not available, please try again.", Toast.LENGTH_SHORT).show();
+				return;
+
+				// Or you can continue without getting the location, remove the return; above and uncomment the line given below
+				// address = "Location not available";
+			} else {
+
+				// Getting location co-ordinates
+				double latitude = mGPSService.getLatitude();
+				double longitude = mGPSService.getLongitude();
+		//		Toast.makeText(getApplicationContext(), "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
+
+				address = mGPSService.getLocationAddress();
+
+			
+			}
+
+		//	Toast.makeText(getApplicationContext(), "Your address is: " + address, Toast.LENGTH_SHORT).show();
+			
+			// make sure you close the gps after using it. Save user's battery power
+			mGPSService.closeGPS();
+
+			
+		
+			 Date d = new Date();
+	        
+	        String line="\n"+string+"\t"+d.toGMTString()+"\t"+address+"\t";
+	        try {
+	            if(!file.exists())
+	                file.createNewFile();
+	               FileOutputStream out = new FileOutputStream(file,true);
+	               out.write(line.getBytes());
+	               out.flush();
+	               out.close();
+
+	        } catch (Exception e) {
+	               e.printStackTrace();
+	        }
+	    }
+Boolean gesture = false;
+	StringBuffer buffer = new StringBuffer();
+  private File whichGesture(ArrayList<String> datapointsList) throws Exception {
+		
+  	File sdCard = Environment.getExternalStorageDirectory(); 
+  	File directory = new File (sdCard.getAbsolutePath() + "/Data"); 
+  	if(!directory.exists()) 
+  		directory.mkdirs(); 
+  	 
+ 
+  	List<String> dataPoints= datapointsList;
+		for (int i = 0; i < dataPoints.size(); i++) {
+	            buffer.append(datapointsList.get(i));
+	            Log.i("Data Points : ","writing into a seq file");
+		}
+		buffer.append(System.getProperty("line.separator"));
+	  String  string = buffer.toString();
+		File file = new File (directory, "learn.seq"); 
+  	try { 
+  		if(file.exists())file.delete();
+  		if(!file.exists()) file.createNewFile(); 
+  		FileOutputStream out = new FileOutputStream(file,true); 
+  		out.write(string.getBytes()); 
+  		out.flush(); 
+  		out.close(); } 
+  	catch (Exception e) 
+  	{ e.printStackTrace();
+   }
+  	 buffer.delete(0, buffer.length());
+	    return file;
+	}
 }
+
+
